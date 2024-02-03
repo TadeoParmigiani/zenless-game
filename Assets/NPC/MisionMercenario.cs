@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class MisionMercenario : MonoBehaviour
 {
+    // Condicionales Para Determinadas Acciones
+    public AceptarMisiones scriptAceptarMisiones;
     public bool misionActiva;
     public bool jugadorCerca;
     public bool ataqueZombie;
     public bool interfazAbierta;
     public bool misionTerminada;
     public bool misionSegundaParte;
-    //zombies 
+
+    // Zombies 
     public GameObject zombie1;
     public GameObject zombie2;
     public GameObject zombie3;
@@ -20,7 +23,8 @@ public class MisionMercenario : MonoBehaviour
     public GameObject zombie7;
     public GameObject zombie8;
     public GameObject zombie9;
-    //
+
+    // Dialogos y Objetos Varios
     public GameObject simboloMision;
     public GameObject aceptarMision;
     public GameObject misionAceptada;
@@ -28,14 +32,15 @@ public class MisionMercenario : MonoBehaviour
     public GameObject zombiesmision2;
     public GameObject misionCompletada;
     public GameObject segundaParteMision;
-    public GameObject simboloDeMision;
     public GameObject misionMercenario;
     public GameObject mercenario;
+    public GameObject auto;
 
 
     // Start se llama antes del primer frame
     void Start()
     {
+        scriptAceptarMisiones = FindObjectOfType<AceptarMisiones>(); 
         ataqueZombie = false;
         misionActiva = false;
         misionTerminada = false;
@@ -46,13 +51,14 @@ public class MisionMercenario : MonoBehaviour
         zombiesmision2.SetActive(false);
         misionCompletada.SetActive(false);
         segundaParteMision.SetActive(false);
+        auto.SetActive(true);
         //mercenario.SetActive(false);
     }
 
     //Update se llama una vez por frame
 void Update()
 {
-    //Primera Interaccion
+    //Primera Interaccion (Primer Ataque Zombie)
     if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && !misionSegundaParte)
     {
         if (!misionAceptada.activeSelf && ataqueZombie == false)
@@ -70,7 +76,7 @@ void Update()
         }               
     }
 
-    //Segunda Interaccion
+    //Segunda Interaccion (Segundo AtaqueZombie)
     if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && misionSegundaParte && !misionTerminada)
     {
         if (!segundaParteMision.activeSelf)
@@ -88,7 +94,7 @@ void Update()
         }
     }
 
-    //Ultima Interaccion 
+    //Ultima Interaccion (Dialogo Final) 
     if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && misionSegundaParte && misionTerminada)
     {
         if (!misionCompletada.activeSelf)
@@ -96,6 +102,14 @@ void Update()
             Pausar();
             misionCompletada.SetActive(true);
             aceptarMision.SetActive(false);
+            
+            if (scriptAceptarMisiones != null)
+            {
+                scriptAceptarMisiones.MisionMercenarioCompletada = true;
+                scriptAceptarMisiones.misionActiva= false;
+                scriptAceptarMisiones.IncrementarContadorMisionesCompletadas();
+                Debug.Log("¡Misión Mercenario completada!");
+            }
         }
         else
         {
