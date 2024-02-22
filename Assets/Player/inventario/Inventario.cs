@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+
 
 public class Inventario : MonoBehaviour
 {
@@ -15,7 +17,7 @@ public class Inventario : MonoBehaviour
     public void Start()
     {
         canvas.SetActive(false);
-        Debug.Log(!canvas.activeSelf);
+        //Debug.Log(!canvas.activeSelf);
     } 
     private void Awake()
     {

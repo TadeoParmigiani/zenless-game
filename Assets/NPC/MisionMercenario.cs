@@ -6,11 +6,11 @@ public class MisionMercenario : MonoBehaviour
 {
     // Condicionales Para Determinadas Acciones
     public AceptarMisiones scriptAceptarMisiones;
-    public bool misionActiva;
-    public bool jugadorCerca;
-    public bool ataqueZombie;
-    public bool interfazAbierta;
-    public bool misionTerminada;
+    public bool misionActiva = false;
+    public bool jugadorCerca = false;
+    public bool ataqueZombie = false;
+    public bool interfazAbierta = false;
+    public bool misionTerminada = false;
     public bool misionSegundaParte;
 
     // Zombies 
@@ -41,10 +41,6 @@ public class MisionMercenario : MonoBehaviour
     void Start()
     {
         scriptAceptarMisiones = FindObjectOfType<AceptarMisiones>(); 
-        ataqueZombie = false;
-        misionActiva = false;
-        misionTerminada = false;
-        misionSegundaParte = false;
         simboloMision.SetActive(true);
         aceptarMision.SetActive(false);
         zombiesmision1.SetActive(false);
@@ -173,5 +169,4 @@ void OnTriggerExit(Collider other)
         aceptarMision.SetActive(false);
     }
 }
-
 }

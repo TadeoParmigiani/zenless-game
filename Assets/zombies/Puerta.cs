@@ -14,7 +14,7 @@ public class Puerta : MonoBehaviour
     {
         puertaAbierta.SetActive(false);
         puertaCerrada.SetActive(true);
-        Debug.Log(cameraEnable);
+        //Debug.Log(cameraEnable);
     }
 
     // Update is called once per frame

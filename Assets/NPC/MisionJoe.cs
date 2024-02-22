@@ -4,171 +4,193 @@ using UnityEngine;
 
 public class MisionJoe : MonoBehaviour
 {
-    // Condicionales para determinadas acciones
-    public AceptarMisiones scriptAceptarMisiones;
-    public bool misionJoeActiva;
-    public bool jugadorCerca;
-    public bool ataqueZombie;
-    public bool interfazAbierta;
-    public bool misionTerminada;
-    public bool misionSegundaParte;
-    public bool misionJoeTerminada;
+    // Variables relacionadas con el diálogo de Joe
+    public GameObject[] secuenciaDialogos1;
+    public GameObject[] secuenciaDialogos2;
+    public GameObject[] secuenciaDialogos3;
+    public GameObject mensajeInteractuar;
+    private GameObject[] secuenciaActual;
+    private int indiceDialogoActual = 0;
+    private bool enDialogo = false;
+    private bool primerDialogoCompletado = false;
+    private bool segundoDialogoCompletado = false;
+    private bool tercerDialogoCompletado = false;
+    private bool ataqueZombie = false;
+    private bool jugadorCerca = false;
 
-    // Zombies
-    public GameObject zombie1;
-    public GameObject zombie2;
-    public GameObject zombie3;
-    public GameObject zombie4;
-    public GameObject zombie5;
-    public GameObject zombie6;
-    public GameObject zombie7;
-    public GameObject zombie8;
-    public GameObject zombie9;
-    
-    // Dialogos y Objetos
-    public GameObject simboloMision;
-    public GameObject aceptarMision;
-    public GameObject misionAceptada;
+    // Variables relacionadas con la misión de Joe
+    public AceptarMisiones scriptAceptarMisiones;
     public GameObject zombiesmision1;
     public GameObject zombiesmision2;
-    public GameObject misionCompletada;
-    public GameObject segundaParteMision;
-    public GameObject misionJoe;
-    public GameObject joe;
-
+    public GameObject misionJoeTerminada;
+    public GameObject Joe;
 
     // Start se llama antes del primer frame
     void Start()
     {
         scriptAceptarMisiones = FindObjectOfType<AceptarMisiones>();
-        ataqueZombie = false;
-        misionTerminada = false;
-        misionSegundaParte = false;
-        simboloMision.SetActive(true);
-        aceptarMision.SetActive(false);
         zombiesmision1.SetActive(false);
         zombiesmision2.SetActive(false);
-        segundaParteMision.SetActive(false);
-        //joe.SetActive(false);
+        mensajeInteractuar.SetActive(false);
     }
 
-    //Update se llama una vez por frame
+
+    // Colsion con el collider de Joe
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && !ataqueZombie)
+        {
+            jugadorCerca = true;
+            MostrarMensajeInteractivo();
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player") && !ataqueZombie)
+        {
+            jugadorCerca = false;
+            OcultarMensajeInteractivo();
+        }
+    }
+
+    // Update se llama una vez por frame
     void Update()
-{
-    //Primera Interaccion (Primer Ataque Zombie)
-    if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && !misionSegundaParte)
     {
-        if (!misionAceptada.activeSelf && ataqueZombie == false)
+        if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && !ataqueZombie && !enDialogo)
         {
-            Pausar();
-            aceptarMision.SetActive(false);
-            misionAceptada.SetActive(true);
-        }    
-        else if (Input.GetKeyDown(KeyCode.F))
-        {
-            Volver();
-            misionAceptada.SetActive(false);
-            zombiesmision1.SetActive(true);
-            ataqueZombie = true;
-        }               
-    }
-
-    //Segunda Interaccion (Segundo AtaqueZombie)
-    if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && misionSegundaParte && !misionTerminada)
-    {
-        if (!segundaParteMision.activeSelf)
-        {
-            Pausar();
-            segundaParteMision.SetActive(true);
-            aceptarMision.SetActive(false);
-        }
-        else
-        {
-            Volver();
-            segundaParteMision.SetActive(false);
-            zombiesmision2.SetActive(true);
-            ataqueZombie = true;
-        }
-    }
-
-    //Ultima Interaccion (Dialogo Final)
-    if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && misionSegundaParte && misionTerminada)
-    {
-        if (!misionCompletada.activeSelf)
-        {
-            Pausar();
-            misionCompletada.SetActive(true);
-            aceptarMision.SetActive(false);
-
-            if (scriptAceptarMisiones != null)
+            OcultarMensajeInteractivo();
+            if (!primerDialogoCompletado)
             {
-                scriptAceptarMisiones.MisionJoeCompletada = true;
-                scriptAceptarMisiones.misionActiva= false;
-                scriptAceptarMisiones.IncrementarContadorMisionesCompletadas();
-                Debug.Log("¡Misión Joe completada!");
+                IniciarSecuenciaDialogos(secuenciaDialogos1);
+                Pausar();
+            }
+            else if (primerDialogoCompletado && !segundoDialogoCompletado)
+            {
+                IniciarSecuenciaDialogos(secuenciaDialogos2);
+                Pausar();
+            }
+            else if (primerDialogoCompletado && segundoDialogoCompletado && !tercerDialogoCompletado)
+            {
+                IniciarSecuenciaDialogos(secuenciaDialogos3);
+                Pausar();
             }
         }
-        else
+
+        if (enDialogo && Input.GetKeyDown(KeyCode.F))
         {
-            Volver();
-            misionCompletada.SetActive(false);
-            misionJoe.SetActive(false);
-            joe.SetActive(true);
+            OcultarDialogoActual();
+
+            if (indiceDialogoActual < secuenciaActual.Length - 1)
+            {
+                indiceDialogoActual++;
+                MostrarDialogoActual();
+            }
+            else
+            {
+                enDialogo = false;
+                Volver();
+
+                if (!primerDialogoCompletado)
+                {
+                    primerDialogoCompletado = true;
+                    ataqueZombie = true;
+                    IniciarAtaqueZombie(zombiesmision1);
+                }
+                else if (primerDialogoCompletado && !segundoDialogoCompletado)
+                {
+                    segundoDialogoCompletado = true;
+                    ataqueZombie = true;
+                    StartCoroutine(EsperarYActivarSegundaOleada());
+                }
+                else if (primerDialogoCompletado && segundoDialogoCompletado && !tercerDialogoCompletado)
+                {
+                    tercerDialogoCompletado = true;
+                    scriptAceptarMisiones.MisionJoeCompletada = true;
+                    scriptAceptarMisiones.misionActiva= false;
+                    scriptAceptarMisiones.IncrementarContadorMisionesCompletadas();
+                    Debug.Log("¡Mision Joe completada!");
+                    misionJoeTerminada.SetActive(false);
+                    Joe.SetActive(true);
+                }
+            }
+        }
+
+        // Verificar si todos los zombies de la primera oleada han sido derrotados
+        if (ataqueZombie && zombiesmision1.activeSelf && TodosZombiesMuertos(zombiesmision1))
+        {
+            ataqueZombie = false;
+        }
+
+        // Verificar si todos los zombies de la segunda oleada han sido derrotados
+        if (ataqueZombie && zombiesmision2.activeSelf && TodosZombiesMuertos(zombiesmision2))
+        {
+            ataqueZombie = false;
         }
     }
 
-    //Verificacion de oleada
-    VerificarExistenciaZombies();
-    VerificarExistenciaZombies2();
-}
-
-void VerificarExistenciaZombies()
-{
-    if (zombie1 == null && zombie2 == null && zombie3 == null && zombie4 == null)
+    //Funciones de Dialogos
+    void IniciarSecuenciaDialogos(GameObject[] secuencia)
     {
-        misionSegundaParte = true;
-        ataqueZombie = false;
+        indiceDialogoActual = 0;
+        enDialogo = true;
+        secuenciaActual = secuencia;
+        MostrarDialogoActual();
     }
-}
 
-void VerificarExistenciaZombies2()
-{
-    if (zombie6 == null && zombie7 == null && zombie8 == null && zombie9 == null)
+    void MostrarDialogoActual()
     {
-        misionJoeTerminada = true;
-        ataqueZombie = false;
+        secuenciaActual[indiceDialogoActual].SetActive(true);
     }
-}
 
-void Volver()
-{
-    Time.timeScale = 1f;
-}
-
-void Pausar()
-{
-    Time.timeScale = 0f;
-}
-    
-void OnTriggerEnter(Collider other)
-{
-    if (other.CompareTag("Player"))
+    void OcultarDialogoActual()
     {
-        jugadorCerca = true;
-        if (!interfazAbierta && ataqueZombie == false)
+        secuenciaActual[indiceDialogoActual].SetActive(false);
+    }
+
+    void MostrarMensajeInteractivo()
+    {
+        mensajeInteractuar.SetActive(true);
+    }
+
+    void OcultarMensajeInteractivo()
+    {
+        mensajeInteractuar.SetActive(false);
+    }
+
+    //Zombies
+    void IniciarAtaqueZombie(GameObject oleadaZombie)
+    {
+        oleadaZombie.SetActive(true);
+    }
+
+    bool TodosZombiesMuertos(GameObject zombies)
+    {
+        foreach (Transform zombie in zombies.transform)
         {
-            aceptarMision.SetActive(true);
+            if (zombie.gameObject.activeSelf)
+            {
+                return false;
+            }
         }
+        return true;
     }
-}
 
-void OnTriggerExit(Collider other)
-{
-    if (other.CompareTag("Player"))
+    IEnumerator EsperarYActivarSegundaOleada()
     {
-        jugadorCerca = false;
-        aceptarMision.SetActive(false);
+        yield return new WaitForSeconds(5f); // Esperar 30 segundos
+        IniciarAtaqueZombie(zombiesmision2); // Activar la segunda oleada de zombies
     }
-}
+
+    // Tiempo
+    void Volver()
+    {
+        Time.timeScale = 1f;
+    }
+
+    void Pausar()
+    {
+        Time.timeScale = 0f;
+    }
 
 }

@@ -19,7 +19,7 @@ public class ThirdPersonControllerMovement : MonoBehaviour
     #endregion
 
     #region Movement
-    private bool movementEnabled = true;
+    public bool movementEnabled = true;
     [FormerlySerializedAs("walk_speed")] [Range(0.0f, 10.0f)]
     public float walkSpeed;
     [FormerlySerializedAs("run_speed_multiplier")] [Range(1.0f, 2.0f)]

@@ -25,7 +25,7 @@ public class DialogoJoe : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !ataqueZombie)
         {
             jugadorCerca = false;
             OcultarMensajeInteractivo();
@@ -163,4 +163,3 @@ public class DialogoJoe : MonoBehaviour
         return null;
     }
 }
-

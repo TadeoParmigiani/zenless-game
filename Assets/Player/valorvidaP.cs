@@ -6,6 +6,9 @@ public class valorvidaP : MonoBehaviour
 {
     public int maxHealth;
     public int currentHealth;
+    public int corazones = 0;
+    public int dinero = 0;
+    public Text textoDinero;
     public bool isDead;
     bool isCountingDown;
     public Slider slider;
@@ -35,10 +38,13 @@ public class valorvidaP : MonoBehaviour
 
     void Update()
     {
+        textoDinero.text = dinero.ToString() + "$";
+        Debug.Log("corazones: "+corazones);
         if (isCountingDown)
         {
             MostrarTiempo();
         }
+        
     }
 
     public void TakeDamage(int amount)
@@ -98,5 +104,13 @@ public class valorvidaP : MonoBehaviour
         Start();
         GetComponent<ThirdPersonControllerMovement>().EnableMovement();
 
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Corazon"))
+        {
+            corazones++;
+        }
     }
 }

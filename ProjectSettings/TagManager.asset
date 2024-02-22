@@ -7,6 +7,7 @@ TagManager:
   - zombie
   - Puerta
   - zombie oleada
+  - Corazon
   layers:
   - Default
   - TransparentFX

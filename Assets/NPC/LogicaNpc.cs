@@ -22,7 +22,7 @@ public class LogicaNpc : MonoBehaviour
     //Update se llama una vez por frame
    void Update()
 {
-    if (Input.GetKeyDown(KeyCode.F) && jugadorCerca == true)
+    if (Input.GetKeyDown(KeyCode.F) && jugadorCerca)
     {
         if (!panelCompra.activeSelf)
         {

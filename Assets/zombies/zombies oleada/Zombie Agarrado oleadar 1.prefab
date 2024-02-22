@@ -1008,6 +1008,7 @@ GameObject:
   - component: {fileID: 7237054095531607626}
   - component: {fileID: 7229679704714574629}
   - component: {fileID: 5065286776289288890}
+  - component: {fileID: -8049727028894265646}
   m_Layer: 0
   m_Name: Zombie Agarrado oleadar 1
   m_TagString: zombie
@@ -1100,6 +1101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
+  corazonPrefab: {fileID: 0}
   isDead: 0
 --- !u!114 &7229679704714574629
 MonoBehaviour:
@@ -1117,6 +1119,7 @@ MonoBehaviour:
   distance: 15
   puntoDisparo: {fileID: 6528829713928701485}
   player: {fileID: 0}
+  lenguaExtendida: 0
   agarrado: 0
 --- !u!54 &5065286776289288890
 Rigidbody:
@@ -1134,6 +1137,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-8049727028894265646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5895423722886274199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73a9a706ffdffc841b867e11a7d004f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distance: 0
+  zombieAgarradorUbicacion: {fileID: 0}
 --- !u!1 &5923976582351329402
 GameObject:
   m_ObjectHideFlags: 0

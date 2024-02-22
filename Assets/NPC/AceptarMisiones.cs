@@ -4,6 +4,25 @@ using UnityEngine;
 
 public class AceptarMisiones : MonoBehaviour
 {
+    //Interaccion con Alcalde (Mercenario)
+    public GameObject[] secuenciaDialogosMercenario;
+    public GameObject misionMercenario;
+    public GameObject Mercenario;
+
+    //Interaccion con Alcalde (Joe)
+    public GameObject[] secuenciaDialogosJoe;
+    public GameObject misionJoe;
+    public GameObject Joe;
+
+    //Interaccion con Alcalde (Generador)
+    public GameObject[] secuenciaDialogosGenerador;
+    public GameObject misionGenerador;
+
+    //Interaccion con Alcalde (Investigador)
+    public GameObject[] secuenciaDialogosInvestigador;
+    public GameObject misionInvestigador;
+    public GameObject Investigador;
+
     //Contador de Misiones
     public int misionesCompletadasCantidad = 0;
     public bool elegirMisionPorContador = false;
@@ -15,137 +34,141 @@ public class AceptarMisiones : MonoBehaviour
     public bool MisionInvestigadorCompletada;
 
     // Interaccion con Alcalde (Cercania)
+    public GameObject mensajeInteractuar;
+    private GameObject[] secuenciaActual;
+    private int indiceDialogoActual = 0;
+    private bool enDialogo = false;
     public bool jugadorCerca;
     public bool interfazAbierta;
     public bool misionActiva;
-    public GameObject misionSolicitud;
 
-    //Interaccion con Alcalde (Mercenario)
-    public GameObject misionMercenarioSolicitud;
-    public GameObject misionMercenario;
-
-    //Interaccion con Alcalde (Joe)
-    public GameObject misionJoeSolicitud;
-    public GameObject misionJoe;
-
-    //Interaccion con Alcalde (Generador)
-    public GameObject misionGeneradorSolicitud;
-    public GameObject misionGenerador;
-
-    //Interaccion con Alcalde (Investigador)
-    public GameObject misionInvestigadorSolicitud;
-    public GameObject misionInvestigador;
-
-void Start()
-{
-    misionActiva = false;
-    elegirMisionPorContador = false;
-    misionSolicitud.SetActive(false);
-    misionMercenario.SetActive(false);
-    misionJoeSolicitud.SetActive(false);
-    misionGeneradorSolicitud.SetActive(false);
-    misionMercenarioSolicitud.SetActive(false);
-    misionInvestigadorSolicitud.SetActive(false);
-}
-
-void Update()
-{
-    if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && !misionActiva)
+    void Start()
     {
-        if (!misionMercenarioSolicitud.activeSelf && misionesCompletadasCantidad == 0)
-        {
-            Pausar();
-            misionSolicitud.SetActive(false);
-            misionMercenarioSolicitud.SetActive(true);
-            elegirMisionPorContador = true;
-        }    
-        else if (!misionJoeSolicitud.activeSelf && misionesCompletadasCantidad == 1)
-        {
-            Pausar();
-            misionSolicitud.SetActive(false);
-            misionJoeSolicitud.SetActive(true);
-            elegirMisionPorContador = true;
-        }    
-        else if (!misionGeneradorSolicitud.activeSelf && misionesCompletadasCantidad == 2)
-        {
-            Pausar();
-            misionSolicitud.SetActive(false);
-            misionGeneradorSolicitud.SetActive(true);
-            elegirMisionPorContador = true;
-        }    
-        else if (!misionInvestigadorSolicitud.activeSelf && misionesCompletadasCantidad == 3)
-        {
-            Pausar();
-            misionSolicitud.SetActive(false);
-            misionInvestigadorSolicitud.SetActive(true);
-            elegirMisionPorContador = true;
-        }
+        //Dialogo alcalde
+        misionActiva = false;
+        elegirMisionPorContador = false;
+
+        //Misiones
+        misionMercenario.SetActive(false);
+        misionJoe.SetActive(false);
+        misionGenerador.SetActive(false);
+        misionInvestigador.SetActive(false);
+
+        //NPC
+        Mercenario.SetActive(false);
+        Joe.SetActive(false);
+        Investigador.SetActive(false);
     }
-    else if (Input.GetKeyDown(KeyCode.F) && elegirMisionPorContador)
-    {
-        Volver();
-        misionJoeSolicitud.SetActive(false);
-        misionGeneradorSolicitud.SetActive(false);
-        misionMercenarioSolicitud.SetActive(false);
-        misionInvestigadorSolicitud.SetActive(false);
 
-        // Activa las misiones correspondientes
-        if (misionesCompletadasCantidad == 0)
+    void MostrarDialogoActual()
         {
-            misionMercenario.SetActive(true);
+            secuenciaActual[indiceDialogoActual].SetActive(true);
         }
-        else if (misionesCompletadasCantidad == 1)
+
+    void OcultarDialogoActual()
+    {
+        secuenciaActual[indiceDialogoActual].SetActive(false);
+    }
+
+    void MostrarMensajeInteractivo()
+    {
+        mensajeInteractuar.SetActive(true);
+    }
+
+    void OcultarMensajeInteractivo()
+    {
+        mensajeInteractuar.SetActive(false);
+    }
+
+    void IniciarSecuenciaDialogos(GameObject[] secuencia)
+    {
+        indiceDialogoActual = 0;
+        enDialogo = true;
+        secuenciaActual = secuencia;
+        Pausar();
+        MostrarDialogoActual();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F) && jugadorCerca && !misionActiva && !enDialogo)
         {
-            misionJoe.SetActive(true);
-        }
-        else if (misionesCompletadasCantidad == 2)
-        {
-            misionGenerador.SetActive(true);
-        }
-        else if (misionesCompletadasCantidad == 3)
-        {
-            misionInvestigador.SetActive(true);
+            if (misionesCompletadasCantidad == 0)
+            {
+                OcultarMensajeInteractivo();
+                IniciarSecuenciaDialogos(secuenciaDialogosMercenario);
+                misionMercenario.SetActive(true);
+            }    
+            else if (misionesCompletadasCantidad == 1)
+            {
+                OcultarMensajeInteractivo();
+                IniciarSecuenciaDialogos(secuenciaDialogosJoe);
+                misionJoe.SetActive(true);
+            }    
+            else if (misionesCompletadasCantidad == 2)
+            {
+                OcultarMensajeInteractivo();
+                IniciarSecuenciaDialogos(secuenciaDialogosGenerador);
+                misionGenerador.SetActive(true);
+            }    
+            else if (misionesCompletadasCantidad == 3)
+            {
+                OcultarMensajeInteractivo();
+                IniciarSecuenciaDialogos(secuenciaDialogosInvestigador);
+                misionInvestigador.SetActive(true);
+            }
         }
         
-        misionActiva = true;
-        elegirMisionPorContador = false;
-    }
-}
-
-    
-void OnTriggerEnter(Collider other)
-{
-    if (other.CompareTag("Player"))
-    {
-        jugadorCerca = true;
+        if (enDialogo && Input.GetKeyDown(KeyCode.F))
         {
-            misionSolicitud.SetActive(true);
+            OcultarDialogoActual();
+
+            if (indiceDialogoActual < secuenciaActual.Length - 1)
+            {
+                indiceDialogoActual++;
+                MostrarDialogoActual();
+            }
+            else
+            {
+                enDialogo = false;
+                Volver();
+            }
+        }        
+    }
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            jugadorCerca = true;
+            MostrarMensajeInteractivo();
+            
         }
     }
-}
 
-void OnTriggerExit(Collider other)
-{
-    if (other.CompareTag("Player"))
+    void OnTriggerExit(Collider other)
     {
-        jugadorCerca = false;
-        misionSolicitud.SetActive(false);
+        if (other.CompareTag("Player"))
+        {
+            jugadorCerca = false;
+            OcultarMensajeInteractivo();
+            
+        }
     }
-}
 
-void Volver()
-{
-    Time.timeScale = 1f;
-}
+    void Volver()
+    {
+        Time.timeScale = 1f;
+    }
 
-void Pausar()
-{
-    Time.timeScale = 0f;
-}
+    void Pausar()
+    {
+        Time.timeScale = 0f;
+    }
 
-public void IncrementarContadorMisionesCompletadas()
-{
-    misionesCompletadasCantidad++;
-}
-
+    public void IncrementarContadorMisionesCompletadas()
+    {
+        misionesCompletadasCantidad++;
+    }
 }
